@@ -439,22 +439,24 @@ pub mod client {
         }
         fn mouse_scroll_x(&mut self, length: i32) {
             let portal = get_portal(&self.conn);
-            let _ = remote_desktop_portal::notify_pointer_axis(
+            // `length` is in wheel steps. NotifyPointerAxis units differ per compositor
+            // (one step on GNOME, one pixel on libei-based KDE and COSMIC).
+            let _ = remote_desktop_portal::notify_pointer_axis_discrete(
                 &portal,
                 &self.session,
                 HashMap::new(),
-                length as f64,
-                0 as f64,
+                1, // horizontal
+                length,
             );
         }
         fn mouse_scroll_y(&mut self, length: i32) {
             let portal = get_portal(&self.conn);
-            let _ = remote_desktop_portal::notify_pointer_axis(
+            let _ = remote_desktop_portal::notify_pointer_axis_discrete(
                 &portal,
                 &self.session,
                 HashMap::new(),
-                0 as f64,
-                length as f64,
+                0, // vertical
+                length,
             );
         }
     }
